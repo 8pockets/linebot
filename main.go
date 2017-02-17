@@ -1,9 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
+	"log"
 	"regexp"
+
+	"github.com/PuerkitoBio/goquery"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -14,7 +18,7 @@ const (
 func main() {
 	//
 	// * ここで県を指定すると、その県の駅を全取得 *
-	//
+	// * 今の運用は
 	area := "tokyo"
 
 	prefPage, err := goquery.NewDocument(LOCALHOST + area + ".html")
@@ -45,7 +49,7 @@ func main() {
 			}
 			defer db.Close()
 
-			query := "INSERT INGORE INTO station (name, stationId) VALUES (?, ?)"
+			query := "INSERT IGNORE INTO station (name, stationId) VALUES (?, ?)"
 			_, errInsert := db.Exec(query, stationName, stationId[1])
 			if errInsert != nil {
 				log.Fatal("insert error: ", errInsert)
